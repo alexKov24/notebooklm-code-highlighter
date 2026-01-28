@@ -115,3 +115,15 @@ export const themes: Record<ThemePair, { light: string; dark: string; name: stri
 export function getThemeCSS(theme: ThemePair, isDark: boolean): string {
   return isDark ? themes[theme].dark : themes[theme].light;
 }
+
+/**
+ * Returns theme CSS scoped for inline code elements.
+ * Replaces `.hljs` with `.nlm-inline-hljs` and strips background properties
+ * so only syntax token colors are applied.
+ */
+export function getInlineThemeCSS(theme: ThemePair, isDark: boolean): string {
+  const css = getThemeCSS(theme, isDark);
+  return css
+    .replace(/\.hljs/g, '.nlm-inline-hljs')
+    .replace(/background:\s*[^;]+;/g, '');
+}

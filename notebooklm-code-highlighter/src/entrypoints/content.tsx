@@ -2,6 +2,9 @@ import { createRoot, type Root } from 'react-dom/client';
 import { CodeBlock } from '../components/CodeBlock';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { getSettings, watchSettings, hashCode } from '../utils/storage';
+import { highlightCode } from '../utils/highlighter';
+import { getInlineThemeCSS } from '../styles/themes';
+import { isDarkMode, watchDarkMode } from '../utils/theme';
 import type { Settings } from '../types';
 
 const isDev = import.meta.env.DEV;
@@ -39,6 +42,25 @@ export default defineContentScript({
           if (settings.enabled) {
             const code = codeElement.textContent ?? '';
             renderCodeBlock(data.root, code, settings);
+          }
+        }
+      });
+
+      // Update inline code theme and toggle
+      updateInlineThemeCSS();
+      document.querySelectorAll('code:not(pre > code)').forEach((codeElement) => {
+        const data = processedInline.get(codeElement);
+        if (data) {
+          if (settings.enabled) {
+            // Re-highlight with new theme
+            const code = codeElement.textContent ?? '';
+            const result = highlightCode(code);
+            codeElement.innerHTML = result.html;
+            codeElement.classList.add('nlm-inline-hljs');
+          } else {
+            // Restore original HTML
+            codeElement.innerHTML = data.originalHTML;
+            codeElement.classList.remove('nlm-inline-hljs');
           }
         }
       });
@@ -113,36 +135,103 @@ export default defineContentScript({
       document.querySelectorAll('pre > code').forEach(processCodeBlock);
     }
 
+    // --- Inline code highlighting ---
+    // Track processed inline code elements and their original content
+    const processedInline = new WeakMap<Element, { hash: string; originalHTML: string }>();
+
+    // Inject a shared <style> for inline code theme CSS
+    let inlineStyleEl: HTMLStyleElement | null = null;
+    let currentDark = isDarkMode();
+
+    function updateInlineThemeCSS() {
+      const css = getInlineThemeCSS(settings.theme, currentDark);
+      if (!inlineStyleEl) {
+        inlineStyleEl = document.createElement('style');
+        inlineStyleEl.id = 'nlm-inline-hljs-theme';
+        document.head.appendChild(inlineStyleEl);
+      }
+      inlineStyleEl.textContent = css;
+    }
+
+    // Watch dark mode changes for inline theme
+    watchDarkMode((dark) => {
+      currentDark = dark;
+      updateInlineThemeCSS();
+    });
+
+    async function processInlineCode(codeElement: Element) {
+      if (codeElement.closest('pre')) return; // Skip block code
+      if (!settings.enabled) return;
+
+      const code = codeElement.textContent ?? '';
+      if (!code.trim()) return;
+
+      const currentHash = await hashCode(code);
+      const existing = processedInline.get(codeElement);
+
+      // Already processed with same content
+      if (existing && existing.hash === currentHash) return;
+
+      // Save original HTML on first processing
+      if (!existing) {
+        processedInline.set(codeElement, {
+          hash: currentHash,
+          originalHTML: codeElement.innerHTML,
+        });
+      } else {
+        existing.hash = currentHash;
+      }
+
+      // Apply syntax highlighting directly to the element
+      const result = highlightCode(code);
+      codeElement.innerHTML = result.html;
+      codeElement.classList.add('nlm-inline-hljs');
+    }
+
+    function processAllInlineCode() {
+      document.querySelectorAll('code:not(pre > code)').forEach(processInlineCode);
+    }
+
+    // Inject theme CSS and process initial inline code
+    updateInlineThemeCSS();
+
     // Initial processing
     processAllCodeBlocks();
+    processAllInlineCode();
 
-    // Watch for new code blocks via MutationObserver
+    // Watch for new code blocks and inline code via MutationObserver
     const observer = new MutationObserver((mutations) => {
-      let shouldProcess = false;
+      let shouldProcessBlocks = false;
+      let shouldProcessInline = false;
 
       for (const mutation of mutations) {
         if (mutation.type === 'childList') {
           for (const node of mutation.addedNodes) {
             if (node instanceof Element) {
               if (node.matches('pre > code') || node.querySelector('pre > code')) {
-                shouldProcess = true;
-                break;
+                shouldProcessBlocks = true;
+              }
+              if (node.matches('code:not(pre > code)') || node.querySelector('code:not(pre > code)')) {
+                shouldProcessInline = true;
               }
             }
           }
         } else if (mutation.type === 'characterData') {
           const parent = mutation.target.parentElement;
-          if (parent?.matches('code') && parent.parentElement?.matches('pre')) {
-            shouldProcess = true;
+          if (parent?.matches('code')) {
+            if (parent.parentElement?.matches('pre')) {
+              shouldProcessBlocks = true;
+            } else {
+              shouldProcessInline = true;
+            }
           }
         }
 
-        if (shouldProcess) break;
+        if (shouldProcessBlocks && shouldProcessInline) break;
       }
 
-      if (shouldProcess) {
-        processAllCodeBlocks();
-      }
+      if (shouldProcessBlocks) processAllCodeBlocks();
+      if (shouldProcessInline) processAllInlineCode();
     });
 
     observer.observe(document.body, {
