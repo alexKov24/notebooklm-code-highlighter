@@ -1,0 +1,18 @@
+# OS
+.DS_Store
+
+# Build outputs
+chrome-mv3/
+firefox-mv2/
+firefox-mv2.zip
+notebooklm-code-highlighter/.wxt/
+notebooklm-code-highlighter/.output/
+
+# Dependencies
+notebooklm-code-highlighter/node_modules/
+
+# IDE
+.claude/
+
+# Misc
+*.zip

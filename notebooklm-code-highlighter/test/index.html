@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NotebookLM Code Highlighter - Test Page</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f5f5f5;
+      line-height: 1.6;
+    }
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: #1a1a1a;
+        color: #e0e0e0;
+      }
+    }
+    h1 {
+      border-bottom: 2px solid #4285f4;
+      padding-bottom: 10px;
+    }
+    h2 {
+      margin-top: 30px;
+      color: #4285f4;
+    }
+    .chat-message {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin: 16px 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    @media (prefers-color-scheme: dark) {
+      .chat-message {
+        background: #2d2d2d;
+      }
+    }
+    /* Simulating NotebookLM's code block styling */
+    pre {
+      background: #f6f8fa;
+      border-radius: 6px;
+      padding: 12px;
+      overflow-x: auto;
+      margin: 12px 0;
+    }
+    @media (prefers-color-scheme: dark) {
+      pre {
+        background: #161b22;
+      }
+    }
+    pre code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .instructions {
+      background: #e8f0fe;
+      border-left: 4px solid #4285f4;
+      padding: 12px 16px;
+      margin: 20px 0;
+      border-radius: 0 8px 8px 0;
+    }
+    @media (prefers-color-scheme: dark) {
+      .instructions {
+        background: #1e3a5f;
+      }
+    }
+    #add-code-btn {
+      background: #4285f4;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      margin: 10px 0;
+    }
+    #add-code-btn:hover {
+      background: #3367d6;
+    }
+  </style>
+</head>
+<body>
+  <h1>NotebookLM Code Highlighter Test</h1>
+
+  <div class="instructions">
+    <strong>Instructions:</strong>
+    <ol>
+      <li>Load the extension in Chrome: <code>chrome://extensions</code> → Developer mode → Load unpacked → Select <code>.output/chrome-mv3</code></li>
+      <li>Refresh this page</li>
+      <li>Code blocks below should be highlighted with syntax coloring, line numbers, copy button, and language picker</li>
+    </ol>
+  </div>
+
+  <h2>Test Cases</h2>
+
+  <div class="chat-message">
+    <p><strong>JavaScript Example:</strong></p>
+    <!-- Simulating NotebookLM's Angular-generated structure -->
+    <pre _ngcontent-ng-c899988535="" class="ng-star-inserted"><code _ngcontent-ng-c899988535="">function fibonacci(n) {
+  if (n <= 1) return n;
+  return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+// Calculate first 10 fibonacci numbers
+const results = [];
+for (let i = 0; i < 10; i++) {
+  results.push(fibonacci(i));
+}
+console.log(results);</code></pre>
+  </div>
+
+  <div class="chat-message">
+    <p><strong>Python Example:</strong></p>
+    <pre _ngcontent-ng-c899988535="" class="ng-star-inserted"><code _ngcontent-ng-c899988535="">import asyncio
+from typing import List, Optional
+
+class DataProcessor:
+    def __init__(self, batch_size: int = 100):
+        self.batch_size = batch_size
+        self._cache: dict = {}
+
+    async def process_items(self, items: List[str]) -> List[dict]:
+        """Process items in batches asynchronously."""
+        results = []
+        for i in range(0, len(items), self.batch_size):
+            batch = items[i:i + self.batch_size]
+            processed = await self._process_batch(batch)
+            results.extend(processed)
+        return results
+
+    async def _process_batch(self, batch: List[str]) -> List[dict]:
+        # Simulate async processing
+        await asyncio.sleep(0.1)
+        return [{"item": item, "processed": True} for item in batch]</code></pre>
+  </div>
+
+  <div class="chat-message">
+    <p><strong>TypeScript/React Example:</strong></p>
+    <pre _ngcontent-ng-c899988535="" class="ng-star-inserted"><code _ngcontent-ng-c899988535="">import { useState, useEffect, useCallback } from 'react';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+export function useUsers() {
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  const fetchUsers = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/users');
+      if (!response.ok) throw new Error('Failed to fetch');
+      const data = await response.json();
+      setUsers(data);
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error('Unknown error'));
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
+  return { users, loading, error, refetch: fetchUsers };
+}</code></pre>
+  </div>
+
+  <div class="chat-message">
+    <p><strong>SQL Example:</strong></p>
+    <pre _ngcontent-ng-c899988535="" class="ng-star-inserted"><code _ngcontent-ng-c899988535="">SELECT
+    u.id,
+    u.name,
+    u.email,
+    COUNT(o.id) as order_count,
+    SUM(o.total) as total_spent
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id
+WHERE u.created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+GROUP BY u.id, u.name, u.email
+HAVING order_count > 0
+ORDER BY total_spent DESC
+LIMIT 10;</code></pre>
+  </div>
+
+  <div class="chat-message">
+    <p><strong>Rust Example:</strong></p>
+    <pre _ngcontent-ng-c899988535="" class="ng-star-inserted"><code _ngcontent-ng-c899988535="">use std::collections::HashMap;
+
+#[derive(Debug, Clone)]
+struct Cache<T> {
+    data: HashMap<String, T>,
+    max_size: usize,
+}
+
+impl<T: Clone> Cache<T> {
+    fn new(max_size: usize) -> Self {
+        Cache {
+            data: HashMap::new(),
+            max_size,
+        }
+    }
+
+    fn get(&self, key: &str) -> Option<T> {
+        self.data.get(key).cloned()
+    }
+
+    fn set(&mut self, key: String, value: T) {
+        if self.data.len() >= self.max_size {
+            // Simple eviction: remove first key
+            if let Some(first_key) = self.data.keys().next().cloned() {
+                self.data.remove(&first_key);
+            }
+        }
+        self.data.insert(key, value);
+    }
+}</code></pre>
+  </div>
+
+  <div class="chat-message">
+    <p><strong>Long Code Block (should have max-height scroll):</strong></p>
+    <pre _ngcontent-ng-c899988535="" class="ng-star-inserted"><code _ngcontent-ng-c899988535="">// This is a long code block to test max-height scrolling
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+    "log"
+    "net/http"
+    "sync"
+    "time"
+)
+
+type Server struct {
+    mu       sync.RWMutex
+    handlers map[string]http.HandlerFunc
+    middleware []func(http.HandlerFunc) http.HandlerFunc
+}
+
+func NewServer() *Server {
+    return &Server{
+        handlers: make(map[string]http.HandlerFunc),
+    }
+}
+
+func (s *Server) Use(mw func(http.HandlerFunc) http.HandlerFunc) {
+    s.middleware = append(s.middleware, mw)
+}
+
+func (s *Server) Handle(path string, handler http.HandlerFunc) {
+    s.mu.Lock()
+    defer s.mu.Unlock()
+
+    // Apply middleware in reverse order
+    for i := len(s.middleware) - 1; i >= 0; i-- {
+        handler = s.middleware[i](handler)
+    }
+
+    s.handlers[path] = handler
+}
+
+func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+    s.mu.RLock()
+    handler, ok := s.handlers[r.URL.Path]
+    s.mu.RUnlock()
+
+    if !ok {
+        http.NotFound(w, r)
+        return
+    }
+
+    handler(w, r)
+}
+
+func LoggingMiddleware(next http.HandlerFunc) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        start := time.Now()
+        next(w, r)
+        log.Printf("%s %s %v", r.Method, r.URL.Path, time.Since(start))
+    }
+}
+
+func JSONResponse(w http.ResponseWriter, data interface{}) {
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(data)
+}
+
+func main() {
+    server := NewServer()
+    server.Use(LoggingMiddleware)
+
+    server.Handle("/health", func(w http.ResponseWriter, r *http.Request) {
+        JSONResponse(w, map[string]string{"status": "ok"})
+    })
+
+    server.Handle("/api/users", func(w http.ResponseWriter, r *http.Request) {
+        users := []map[string]interface{}{
+            {"id": 1, "name": "Alice"},
+            {"id": 2, "name": "Bob"},
+        }
+        JSONResponse(w, users)
+    })
+
+    fmt.Println("Server starting on :8080")
+    log.Fatal(http.ListenAndServe(":8080", server))
+}</code></pre>
+  </div>
+
+  <h2>Dynamic Test</h2>
+  <p>Click the button below to dynamically add a code block (tests MutationObserver):</p>
+  <button id="add-code-btn">Add Code Block</button>
+  <div id="dynamic-container"></div>
+
+  <script>
+    document.getElementById('add-code-btn').addEventListener('click', () => {
+      const container = document.getElementById('dynamic-container');
+      const message = document.createElement('div');
+      message.className = 'chat-message';
+      message.innerHTML = `
+        <p><strong>Dynamically Added (${new Date().toLocaleTimeString()}):</strong></p>
+        <pre _ngcontent-ng-c899988535="" class="ng-star-inserted"><code _ngcontent-ng-c899988535="">// This code was added dynamically
+const greeting = "Hello, World!";
+console.log(greeting);
+
+function add(a, b) {
+  return a + b;
+}
+
+const result = add(2, 3);
+console.log(\`2 + 3 = \${result}\`);</code></pre>
+      `;
+      container.appendChild(message);
+    });
+  </script>
+</body>
+</html>

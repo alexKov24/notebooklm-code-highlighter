@@ -1,0 +1,38 @@
+{
+  "name": "notebooklm-code-highlighter",
+  "version": "1.0.0",
+  "description": "Syntax highlighting for code blocks in NotebookLM",
+  "type": "module",
+  "scripts": {
+    "dev": "wxt",
+    "dev:firefox": "wxt --browser firefox",
+    "build": "wxt build",
+    "build:firefox": "wxt build --browser firefox",
+    "zip": "wxt zip",
+    "zip:firefox": "wxt zip --browser firefox",
+    "typecheck": "tsc --noEmit",
+    "test:serve": "npx serve test -p 3000"
+  },
+  "keywords": [
+    "notebooklm",
+    "syntax-highlighting",
+    "browser-extension"
+  ],
+  "author": "",
+  "license": "MIT",
+  "packageManager": "pnpm@10.18.1",
+  "dependencies": {
+    "highlight.js": "^11.11.1",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "wxt": "^0.20.13"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.1.36",
+    "@types/node": "^25.0.10",
+    "@types/react": "^19.2.9",
+    "@types/react-dom": "^19.2.3",
+    "@wxt-dev/module-react": "^1.1.5",
+    "typescript": "^5.9.3"
+  }
+}
