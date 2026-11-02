@@ -16,3 +16,7 @@ notebooklm-code-highlighter/node_modules/
 
 # Misc
 *.zip
+
+# Local test fixtures (saved NotebookLM pages contain personal data)
+/test/
+notebooklm-code-highlighter/public/icon/icon copy.png
