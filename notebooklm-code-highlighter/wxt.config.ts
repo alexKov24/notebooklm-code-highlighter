@@ -6,6 +6,10 @@ export default defineConfig({
   srcDir: 'src',
   extensionApi: 'chrome',
   modules: ['@wxt-dev/module-react'],
+  zip: {
+    // Local Playwright output: not part of the source for store review
+    excludeSources: ['playwright-report/**', 'test-results/**'],
+  },
   manifest: {
     name: 'NotebookLM Code Highlighter',
     description: 'Adds syntax highlighting to code blocks in NotebookLM',
