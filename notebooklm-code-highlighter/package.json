@@ -1,6 +1,6 @@
 {
   "name": "notebooklm-code-highlighter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Syntax highlighting for code blocks in NotebookLM",
   "type": "module",
   "scripts": {
