@@ -20,3 +20,7 @@ notebooklm-code-highlighter/node_modules/
 # Local test fixtures (saved NotebookLM pages contain personal data)
 /test/
 notebooklm-code-highlighter/public/icon/icon copy.png
+
+# Playwright
+notebooklm-code-highlighter/test-results/
+notebooklm-code-highlighter/playwright-report/

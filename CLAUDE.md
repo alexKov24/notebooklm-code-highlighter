@@ -25,6 +25,10 @@ pnpm zip:firefox      # Firefox
 
 # Type checking
 pnpm typecheck
+
+# Visual/e2e tests (Chromium via Playwright, Firefox via Selenium; builds first)
+pnpm test:e2e
+pnpm test:e2e:update  # re-record screenshot baselines after an intended visual change
 ```
 
 ## Architecture
