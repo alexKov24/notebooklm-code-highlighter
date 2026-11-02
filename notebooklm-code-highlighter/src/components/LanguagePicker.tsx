@@ -1,5 +1,14 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect, useLayoutEffect } from 'react';
 import { LANGUAGES, getLanguageName } from '../utils/highlighter';
+
+const DROPDOWN_MAX_HEIGHT = 300;
+const DROPDOWN_MIN_HEIGHT = 120;
+const VIEWPORT_MARGIN = 8;
+
+interface DropdownPlacement {
+  openUp: boolean;
+  maxHeight: number;
+}
 
 interface LanguagePickerProps {
   currentLanguage: string;
@@ -16,6 +25,10 @@ export function LanguagePicker({
 }: LanguagePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
+  const [placement, setPlacement] = useState<DropdownPlacement>({
+    openUp: false,
+    maxHeight: DROPDOWN_MAX_HEIGHT,
+  });
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -38,6 +51,35 @@ export function LanguagePicker({
     },
     [onLanguageChange]
   );
+
+  // Open upward when there isn't room below (e.g. code block near the bottom
+  // of the viewport) and shrink to fit whichever side is chosen
+  useLayoutEffect(() => {
+    if (!isOpen || !containerRef.current) return;
+
+    const updatePlacement = () => {
+      const rect = containerRef.current!.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom - VIEWPORT_MARGIN;
+      const spaceAbove = rect.top - VIEWPORT_MARGIN;
+      const openUp = spaceBelow < DROPDOWN_MAX_HEIGHT && spaceAbove > spaceBelow;
+      const available = openUp ? spaceAbove : spaceBelow;
+      const maxHeight = Math.max(DROPDOWN_MIN_HEIGHT, Math.min(DROPDOWN_MAX_HEIGHT, available));
+      // Runs on every scroll event: skip the re-render when nothing changed
+      setPlacement((prev) =>
+        prev.openUp === openUp && prev.maxHeight === maxHeight ? prev : { openUp, maxHeight }
+      );
+    };
+
+    updatePlacement();
+    // Capture phase so scrolling of any page container (not just the window)
+    // re-evaluates the placement while the menu is open
+    window.addEventListener('resize', updatePlacement);
+    document.addEventListener('scroll', updatePlacement, { capture: true, passive: true });
+    return () => {
+      window.removeEventListener('resize', updatePlacement);
+      document.removeEventListener('scroll', updatePlacement, { capture: true });
+    };
+  }, [isOpen]);
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
@@ -64,6 +106,7 @@ export function LanguagePicker({
   return (
     <div ref={containerRef} style={{ position: 'relative' }}>
       <button
+        className="language-picker-button"
         onClick={() => setIsOpen(!isOpen)}
         style={{
           display: 'flex',
@@ -111,13 +154,15 @@ export function LanguagePicker({
 
       {isOpen && (
         <div
+          className="language-picker-menu"
           style={{
             position: 'absolute',
-            top: '100%',
+            ...(placement.openUp
+              ? { bottom: '100%', marginBottom: '4px' }
+              : { top: '100%', marginTop: '4px' }),
             right: 0,
-            marginTop: '4px',
             width: '200px',
-            maxHeight: '300px',
+            maxHeight: `${placement.maxHeight}px`,
             overflowY: 'auto',
             background: 'var(--nlm-hl-dropdown-bg, #fff)',
             border: '1px solid var(--nlm-hl-dropdown-border, #e1e4e8)',

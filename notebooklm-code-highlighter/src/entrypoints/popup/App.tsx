@@ -263,7 +263,7 @@ export function App() {
         </div>
 
         <div className="footer">
-          Works on notebooklm.google.com
+          Works on notebook.google.com
         </div>
       </div>
     </>

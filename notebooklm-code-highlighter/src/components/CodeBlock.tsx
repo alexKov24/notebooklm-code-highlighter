@@ -17,10 +17,11 @@ const baseStyles = `
     box-sizing: border-box;
   }
 
+  /* No overflow: hidden here: it would clip the language dropdown on short
+     blocks. Corners are rounded on the header and content instead. */
   .code-block-container {
     position: relative;
     border-radius: 6px;
-    overflow: hidden;
     font-family: inherit;
   }
 
@@ -31,10 +32,12 @@ const baseStyles = `
     gap: 4px;
     padding: 4px 8px;
     background: rgba(128, 128, 128, 0.1);
+    border-radius: 6px 6px 0 0;
   }
 
   .code-block-content {
     overflow: auto;
+    border-radius: 0 0 6px 6px;
   }
 
   .code-block-content pre {
