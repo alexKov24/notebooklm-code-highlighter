@@ -11,6 +11,8 @@ const isDev = import.meta.env.DEV;
 
 export default defineContentScript({
   matches: [
+    'https://notebook.google.com/*',
+    // Legacy domain, still served to accounts not yet migrated
     'https://notebooklm.google.com/*',
     // Only include localhost in development builds
     ...(isDev ? ['*://localhost/*'] : []),

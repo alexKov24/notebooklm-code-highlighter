@@ -11,6 +11,8 @@ export default defineConfig({
     description: 'Adds syntax highlighting to code blocks in NotebookLM',
     permissions: ['storage'],
     host_permissions: [
+      'https://notebook.google.com/*',
+      // Legacy domain, still served to accounts not yet migrated
       'https://notebooklm.google.com/*',
       // Only include localhost in development builds
       ...(isDev ? ['*://localhost/*'] : []),

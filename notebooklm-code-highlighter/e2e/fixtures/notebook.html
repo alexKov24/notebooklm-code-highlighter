@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NotebookLM fixture</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f5f5f5;
+      color: #1f1f1f;
+    }
+    .chat-message {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      margin: 16px 0;
+    }
+    .spacer {
+      height: 1500px;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-message">
+    <p>One-line block:</p>
+    <pre id="short"><code>print("hello")</code></pre>
+  </div>
+
+  <div class="chat-message">
+    <p>Block with a line wider than the container:</p>
+    <pre id="wide"><code>const config = { name: 'notebook', retries: 3, timeoutMs: 30000, endpoints: ['https://example.com/api/v1/items', 'https://example.com/api/v1/users', 'https://example.com/api/v1/orders'] };
+console.log(config);</code></pre>
+    <p>Inline: <code>const answer = 42</code></p>
+  </div>
+
+  <div class="chat-message">
+    <p>Block taller than the max height:</p>
+    <pre id="long"><code></code></pre>
+  </div>
+
+  <div class="spacer"></div>
+
+  <div class="chat-message">
+    <p>One-line block at the end of the page:</p>
+    <pre id="bottom"><code>SELECT id FROM users;</code></pre>
+  </div>
+
+  <!-- Lets tests scroll any block, including the last one, to any viewport position -->
+  <div class="spacer"></div>
+
+  <script>
+    // 60 lines: taller than the default 400px max height
+    document.querySelector('#long code').textContent = Array.from(
+      { length: 60 },
+      (_, i) => `function step${i + 1}(value) { return value * ${i + 1}; }`
+    ).join('\n');
+  </script>
+</body>
+</html>

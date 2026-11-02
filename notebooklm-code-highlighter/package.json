@@ -11,7 +11,9 @@
     "zip": "wxt zip",
     "zip:firefox": "wxt zip --browser firefox",
     "typecheck": "tsc --noEmit",
-    "test:serve": "npx serve test -p 3000"
+    "test:serve": "npx serve test -p 3000",
+    "test:e2e": "wxt build && wxt build --browser firefox && playwright test",
+    "test:e2e:update": "wxt build && wxt build --browser firefox && playwright test --update-snapshots"
   },
   "keywords": [
     "notebooklm",
@@ -28,11 +30,14 @@
     "wxt": "^0.20.13"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.1",
     "@types/chrome": "^0.1.36",
     "@types/node": "^25.0.10",
     "@types/react": "^19.2.9",
     "@types/react-dom": "^19.2.3",
+    "@types/selenium-webdriver": "^4.35.7",
     "@wxt-dev/module-react": "^1.1.5",
+    "selenium-webdriver": "^4.52.0",
     "typescript": "^5.9.3"
   }
 }

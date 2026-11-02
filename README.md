@@ -64,7 +64,7 @@ Or [build it from source](#build-from-source).
 
 ## How it works
 
-1. **Watch**: a content script on `notebooklm.google.com` uses a `MutationObserver` to find new code
+1. **Watch**: a content script on `notebook.google.com` (and the legacy `notebooklm.google.com`) uses a `MutationObserver` to find new code
    blocks and inline code.
 2. **Render**: each block is replaced by a React component inside a Shadow DOM, so its styles can't
    clash with NotebookLM's and NotebookLM's can't break it.
@@ -113,7 +113,7 @@ code blocks, on port 3000.
 
 - **No network requests, no analytics, no account.** Highlighting runs entirely in your browser.
 - **One permission: `storage`**, for your settings and language picks.
-- **One site.** Production builds only run on `https://notebooklm.google.com/*`.
+- **One site.** Production builds only run on `https://notebook.google.com/*` and the legacy `https://notebooklm.google.com/*`.
 - **Your code isn't stored.** The language cache keeps a 16-character hash of each block, never the code.
 
 ## Why not a generic highlighter extension?
